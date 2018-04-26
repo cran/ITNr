@@ -17,6 +17,7 @@ This function calculates cluster membership for ITN and compares with regional g
 }
 \examples{
 \donttest{
+##Load ITN
 data(ELEnet16)
 
 ##Cluster Analysis

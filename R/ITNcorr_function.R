@@ -6,6 +6,7 @@
 #' @return Correlation plot
 #' @examples
 #' require(igraph)
+#'
 #' ##Create random International Trade Network (igraph object)
 #' ITN<-erdos.renyi.game(75,0.05,directed = TRUE)
 #'

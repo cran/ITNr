@@ -1,6 +1,11 @@
 #' @title ITN Properties
 #'
-#' @description This function calculates network level properties of the International Trade Network (ITN)
+#' @description This function calculates network level properties for the ITN. These include:
+#' -Size (number of nodes) -Density -Reciprocity -Diameter
+#' -Average path length -Average node strength -Average Degree
+#' -Betweenness Centralisation -Closeness Centralisation -Eigenvector Centralisation
+#' -Out Degree Centralisation -In Degree Centralisation -All Degree Centralisation -Clustering coefficent (transitivity)
+#' -Clustering Weighted -Region Homophily -Degree Assortativity
 #' @param gs International Trade Network - igraph object
 #' @export
 #' @return Table of centrality results (dataframe)

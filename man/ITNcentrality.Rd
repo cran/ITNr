@@ -13,7 +13,7 @@ ITNcentrality(gs)
 Table of centrality results (dataframe)
 }
 \description{
-This function calculates a number of centrality metrics for the International Trade Network (ITN)
+This function calculates a number of centrality metrics for the weighted International Trade Network (ITN)
 }
 \examples{
 require(igraph)
@@ -26,7 +26,7 @@ E(ITN)$weight<-runif(ecount(ITN), 0, 1)
 ##Add vertex names
 V(ITN)$name<-1:vcount(ITN)
 
-##Calculate the centrality
+##Calculate the centrality measures
 ITNCENT<-ITNcentrality(ITN)
 
 }

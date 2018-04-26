@@ -10,15 +10,17 @@ region_circle_plot(gs)
 \item{gs}{igraph ITN object (with attributes added)}
 }
 \value{
-International Trade Network - igraph object
+Circle Plot
 }
 \description{
 This function creates a chord diagram/circle plot for levels of trade between regional partitions
 }
 \examples{
+\donttest{
 ##Load graph
 data("ELEnet16")
 
 ##Create region circle plot
 region_circle_plot(ELEnet16)
+}
 }

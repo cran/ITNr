@@ -17,12 +17,15 @@ get.backbone(G, alpha, directed = TRUE)
 Backbone of the network
 }
 \description{
-This function extract the backbone of a network
+This function extracts the backbone of a network
 }
 \examples{
 require(igraph)
-##Directed Graph
+
+##Create a random (directed) network
 gs<-erdos.renyi.game(50,0.2,directed = TRUE)
+
+##Add edge weights to the network
 E(gs)$weight<-runif(ecount(gs), 0, 1)
 
 ##Extract backbone at 0.05 significance level

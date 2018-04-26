@@ -1,13 +1,15 @@
 #' @title ITN Histogram Degree Distribution
 #'
-#' @description This function plots the ITN histogram degree distribtuion
+#' @description This function plots the histogram degree distribtuion for the ITN
 #' @param gs International Trade Network - igraph object
 #' @export
 #' @return Panel of ITN histogram degree distribtuion plots
 #' @examples
 #' require(igraph)
+#'
 #' ##Create random International Trade Network (igraph object)
 #' ITN<-erdos.renyi.game(75,0.05,directed = TRUE)
+#'
 #' ##Add edge weights
 #' E(ITN)$weight<-runif(ecount(ITN), 0, 1)
 #'
@@ -30,7 +32,7 @@ ITNhistdegdist<-function(gs){
     ggplot2::geom_histogram(fill="darkblue",
                    alpha = 1,position = 'stack', stat = 'bin',
                    binwidth = 1) +
-    ggplot2::labs(title="Out Degree Distribtuion") +
+    ggplot2::labs(title="Out Degree Distribution") +
     ggplot2::labs(x="Out Degree", y="Frquency")+
     ggplot2::theme_gray()
 
@@ -38,7 +40,7 @@ ITNhistdegdist<-function(gs){
     ggplot2::geom_histogram(fill="darkblue",
                             alpha = 1,position = 'stack', stat = 'bin',
                             binwidth = 1) +
-    ggplot2::labs(title="In Degree Distribtuion") +
+    ggplot2::labs(title="In Degree Distribution") +
     ggplot2::labs(x="In Degree", y="Frquency")+
     ggplot2::theme_gray()
 
@@ -46,7 +48,7 @@ ITNhistdegdist<-function(gs){
     ggplot2::geom_histogram(fill="darkblue",
                             alpha = 1,position = 'stack', stat = 'bin',
                             binwidth = 1) +
-    ggplot2::labs(title="Degree Distribtuion") +
+    ggplot2::labs(title="Degree Distribution") +
     ggplot2::labs(x="Degree", y="Frquency")+
     ggplot2::theme_gray()
 

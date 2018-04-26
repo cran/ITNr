@@ -6,8 +6,9 @@
 #' @return It returns the Dynamic Network Object
 #' @examples
 #' require(igraph)
+#'
 #' ##Create a set of random International Trade Networks (igraph objects)
-#' ##Add vertex names
+#' ##and add vertex names
 #' ITN1<-erdos.renyi.game(75,0.05,directed = TRUE)
 #' V(ITN1)$name<-1:vcount(ITN1)
 #' ITN2<-erdos.renyi.game(100,0.01,directed = TRUE)

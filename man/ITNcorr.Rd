@@ -17,6 +17,7 @@ This function plots the correlation between degree and strength scores
 }
 \examples{
 require(igraph)
+
 ##Create random International Trade Network (igraph object)
 ITN<-erdos.renyi.game(75,0.05,directed = TRUE)
 

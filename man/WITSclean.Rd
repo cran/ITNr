@@ -20,6 +20,7 @@ International Trade Network - igraph object
 }
 \description{
 This function takes (import) trade data downloaded from WITS, cleans it and transforms it into a network.
+Adding a number of country level attributes to nodes in the network, including: regional partition, GDP, GDP per capita, GDP growth and FDI.
 }
 \examples{
 \donttest{

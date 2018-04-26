@@ -5,6 +5,7 @@
 #' @export
 #' @return Cluster object containing various cluster memebrship and correlation results
 #' @examples\donttest{
+#' ##Load ITN
 #' data(ELEnet16)
 #'
 #' ##Cluster Analysis

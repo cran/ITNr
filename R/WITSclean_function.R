@@ -1,6 +1,7 @@
 #' @title WITS data clean
 #'
 #' @description This function takes (import) trade data downloaded from WITS, cleans it and transforms it into a network.
+#' Adding a number of country level attributes to nodes in the network, including: regional partition, GDP, GDP per capita, GDP growth and FDI.
 #' @param CSVfile WITS csv file
 #' @param YEAR Year
 #' @param threshold Apply a threshold - TRUE, Extract the backbone - FALSE
@@ -183,10 +184,7 @@ WITSclean<-function(CSVfile,YEAR,threshold,cutoff){
     G2<-igraph::delete.vertices(G1, which(igraph::V(G1)$region==NANumber))
     G3<-igraph::delete.vertices(G2, which(igraph::V(G2)$region==AggNumber))
 
-  } else {
-    G3<-igraph::delete.vertices(G1, igraph::V(G1)[igraph::V(G1)[region=AggNumber] ])
-    G3<-igraph::delete.vertices(G1, which(igraph::V(G1)$region==NANumber))
-  }
+  } else G3<-G1
 
   #Apply the threshold/backbone
   if(threshold==TRUE){

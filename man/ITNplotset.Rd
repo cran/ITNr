@@ -13,7 +13,9 @@ ITNplotset(gs)
 Panel of ITN plots
 }
 \description{
-This function plots the ITN for a quick inspection
+This function creates a panel of four plots of the ITN for a quick inspection.
+Thes include plots: (i) highlighting clusters using the fast greedy algorithm.(ii)node colours for commnities detected using the spinglass algorithm.
+(iii)nodes coloured by regional partition and (iv)with nodes coloured by regional partition and node size based on outdegree centrality.
 }
 \examples{
 \donttest{
@@ -22,5 +24,6 @@ data(ELEnet16)
 
 ##Plot set of network visualisations
 ITNplotset(ELEnet16)
+
 }
 }
