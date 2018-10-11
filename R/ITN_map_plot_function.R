@@ -2,6 +2,7 @@
 #'
 #' @description This function plots the international trade network on a world map
 #' @param gs International Trade Network - igraph object
+#' @import network
 #' @export
 #' @return Plot of the ITN on world map
 #' @examples\donttest{
