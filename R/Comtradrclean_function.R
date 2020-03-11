@@ -1,14 +1,14 @@
 #' @title Comtradr data clean
 #'
-#' @description This function takes (import) trade data downloaded using the comtradr package, cleans it and transforms it into a network.
+#' @description This function takes (import) trade data downloaded from comtrade - potentially using the comtradr package, cleans it and transforms it into a network.
 #' Adding a number of country level attributes to nodes in the network, including: regional partition, GDP, GDP per capita, GDP growth and FDI.
 #' However, it is important to note the limits of using comtradr to construct a network.
-#' Firstly when downloading the data, you must specify reporters and partners –
+#' Firstly when downloading the data with comtradr, you must specify reporters and partners –
 #' yet you cannot put “all” for both – only for either reporters or partners.
 #' Then for the other you are limited to a character vector of country names,
 #' length five or fewer. Therefore, this will not give you a full network.
 #' However, this function can be applied to trade data downloaded from UN Comtrade (download csv and read into R as a dataframe), or any other trade data which is in the same format as the comtradr dataframe.
-#' @param DF Dataframe of trade data downloaded using the comtradr package
+#' @param DF Dataframe of trade data downloaded (potentially using the comtradr package)
 #' @param YEAR Year
 #' @param threshold Apply a threshold - TRUE, Extract the backbone - FALSE
 #' @param cutoff Threshold - cutoff level, Backbone - significance level
@@ -16,17 +16,17 @@
 #' @return International Trade Network - igraph object
 #' @examples \donttest{
 #'##download data using comtradr
-#'require(comtradr)
+#'#require(comtradr)
 #'
 #'##Download the trade data for tomatoes - code 0702
 #'##All countries, Year - 2016
-#'ex_2 <- ct_search(reporters = "All",
-#'               partners = c("USA","China",
-#'               "Germany","Canada","Mexico"),
-#'               trade_direction = "imports",
-#'               start_date = "2016-01-01",
-#'               end_date = "2016-12-31",
-#'               commod_codes = "0702")
+#'#ex_2 <- ct_search(reporters = "All",
+#'#               partners = c("USA","China",
+#'#               "Germany","Canada","Mexico"),
+#'#               trade_direction = "imports",
+#'#               start_date = "2016-01-01",
+#'#               end_date = "2016-12-31",
+#'#               commod_codes = "0702")
 #'
 #'##this then gives a data frame which
 #'##we can clean using the following function:
@@ -42,7 +42,21 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   H<-stats::aggregate(trade_value_usd~reporter_iso+partner_iso, DATA, sum)
 
   Sender<-as.vector(H[,"partner_iso"])
+  Sender<- gsub('SER', 'SRB', Sender)
+  Sender<- gsub('TMP', 'TLS', Sender)
+  Sender<- gsub('ZAR', 'COD', Sender)
+  Sender<- gsub('ROM', 'ROU', Sender)
+  Sender<- gsub('SUD', 'SDN', Sender)
+  Sender<- gsub('MNT', 'MNE', Sender)
+
   Receiver<-as.vector(H[,"reporter_iso"])
+  Receiver<- gsub('SER', 'SRB', Receiver)
+  Receiver<- gsub('TMP', 'TLS', Receiver)
+  Receiver<- gsub('ZAR', 'COD', Receiver)
+  Receiver<- gsub('ROM', 'ROU', Receiver)
+  Receiver<- gsub('SUD', 'SDN', Receiver)
+  Receiver<- gsub('MNT', 'MNE', Receiver)
+
   VAL<-H[,"trade_value_usd"]
   VAL<-as.numeric(VAL)
   FULLel<-as.data.frame(cbind(Sender,Receiver,VAL),stringsAsFactors = FALSE)
@@ -56,7 +70,13 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   INCOMElist<-WDICountryInfo[,"income"]
   CountryRegion<-cbind(COUNTRYlist,REGIONlist)
   CountryIncome<-cbind(COUNTRYlist,INCOMElist)
-  AggReg<-c("All","EUN","UNS","OAS","FRE","SPE")
+  AggReg<-c("All","EUN","UNS","OAS","FRE",
+            "SPE","VAT","UMI","ATA","PCN","AIA","COK",
+            "SHN","MSR","NIU",
+            "BES","BLM","BUN","BVT","CCK","CXR","FLK",#Small regions
+            "HMD","IOT","NFK","SGS","TKL", #small regions
+            "ESH","SPM","ATF"
+  )
   AggRegMat<-matrix("Aggregates",length(AggReg),2)
   AggRegMat[,1]<-AggReg
   CountryRegion<-rbind(CountryRegion,AggRegMat)
@@ -102,6 +122,7 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
     Share[[i]]<-(VAL[i]/GrandTotal)*100
   }
   Share <-plyr::ldply(Share, data.frame)
+  Share<-dplyr::as_data_frame(Share)
   colnames(Share)<-"Share"
   FULLel<-cbind(FULLel,Share)
 
@@ -150,11 +171,17 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
     FDIListAttr[[i]]<-subset(WDIFDI3,WDIFDI3$iso3 %in% CountryNames[i])
   }
   dfREG<-plyr::ldply(RegionListAttr, data.frame)
+  dfREG<-dplyr::as_data_frame(dfREG)
   dfINC<-plyr::ldply(IncomeListAttr,data.frame)
+  dfINC<-dplyr::as_data_frame(dfINC)
   dfGDP<-plyr::ldply(GDPListattr,data.frame)
+  dfGDP<-dplyr::as_data_frame(dfGDP)
   dfGDPPC<-plyr::ldply(GDPPCListattr, data.frame)
+  dfGDPPC<-dplyr::as_data_frame(dfGDPPC)
   dfGDPgrowth<-plyr::ldply(GDPgrowthListAttr, data.frame)
+  dfGDPgrowth<-dplyr::as_data_frame(dfGDPgrowth)
   dfFDI<-plyr::ldply(FDIListAttr, data.frame)
+  dfFDI<-dplyr::as_data_frame(dfFDI)
 
   target<-CountryNames
   dfREG<-dfREG[match(target,dfREG$COUNTRYlist),]
