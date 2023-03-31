@@ -96,7 +96,7 @@ core_periphery_weighted<-function(gs,type){
       RESlist[[i]]<-RESdf
     }
     RESULT<-plyr::ldply(RESlist,data.frame)
-    RESULT<-dplyr::as_data_frame(RESULT)
+    RESULT<-dplyr::as_tibble(RESULT)
     RANK<-igraph::vcount(gs)+1-rank(DF$Weighted.Degree.All)
     RANKout<-igraph::vcount(gs)+1-rank(DF$Weighted.Out.Degree)
     RANKin<-igraph::vcount(gs)+1-rank(DF$Weighted.In.Degree)

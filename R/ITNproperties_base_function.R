@@ -1,11 +1,11 @@
-#' @title ITN Properties
+#' @title ITN Properties Base
 #'
 #' @description This function calculates network level properties for the ITN. These include:
 #' -Size (number of nodes) -Density -Reciprocity -Diameter
 #' -Average path length -Average node strength -Average Degree
 #' -Betweenness Centralisation -Closeness Centralisation -Eigenvector Centralisation
 #' -Out Degree Centralisation -In Degree Centralisation -All Degree Centralisation -Clustering coefficent (transitivity)
-#' -Clustering Weighted -Region Homophily -Degree Assortativity
+#' -Clustering Weighted -Degree Assortativity
 #' @param gs International Trade Network - igraph object
 #' @param weighted TRUE-weighted, FALSE-binary
 #' @export
@@ -15,9 +15,9 @@
 #' data(ELEnet16)
 #'
 #' ##Calculate the network properties
-#' ITNPROP<-ITNproperties(ELEnet16,TRUE)
+#' ITNPROP<-ITNproperties_base(ELEnet16,TRUE)
 #'
-ITNproperties<-function(gs,weighted){
+ITNproperties_base<-function(gs,weighted){
   if (weighted==TRUE){
     net <- cbind(igraph::get.edgelist(gs, names=FALSE), igraph::E(gs)$weight)
     net <- tnet::as.tnet(net, type="weighted one-mode tnet")
@@ -47,7 +47,7 @@ ITNproperties<-function(gs,weighted){
 
     CC<-igraph::transitivity(gs,"global")
 
-    RegionHomophily<-igraph::assortativity_nominal(gs, igraph::V(gs)$region, directed=T)
+    #RegionHomophily<-igraph::assortativity_nominal(gs, igraph::V(gs)$region, directed=T)
     DegAssort<-igraph::assortativity_degree(gs, directed=T)
 
     myDF<-data.frame(
@@ -66,7 +66,7 @@ ITNproperties<-function(gs,weighted){
       All.Degree.Centralisation=DegAllCen$centralization,
       clustering.coefficient.transitivity=CC,
       Clustering.Weighted=WeightedClustering,
-      Region.Homophily=RegionHomophily,
+      #Region.Homophily=RegionHomophily,
       Degree.Assortativity=DegAssort
     )
     myDF<-round_df(myDF,4)
@@ -88,7 +88,7 @@ ITNproperties<-function(gs,weighted){
       "All.Degree.Centralisation",
       "Clustering.coefficient.transitivity",
       "Clustering.Weighted",
-      "Region.Homophily",
+      #"Region.Homophily",
       "Degree.Assortativity")
     colnames(myDF)<-"Network.Properties"
 
@@ -113,7 +113,7 @@ ITNproperties<-function(gs,weighted){
 
     CC<-igraph::transitivity(gs,"global")
 
-    RegionHomophily<-igraph::assortativity_nominal(gs, igraph::V(gs)$region, directed=T)
+    #RegionHomophily<-igraph::assortativity_nominal(gs, igraph::V(gs)$region, directed=T)
     DegAssort<-igraph::assortativity_degree(gs, directed=T)
 
     myDF<-data.frame(
@@ -130,7 +130,7 @@ ITNproperties<-function(gs,weighted){
       In.Degree.Centralisation=DegInCen$centralization,
       All.Degree.Centralisation=DegAllCen$centralization,
       clustering.coefficient.transitivity=CC,
-      Region.Homophily=RegionHomophily,
+      #Region.Homophily=RegionHomophily,
       Degree.Assortativity=DegAssort
     )
     myDF<-round_df(myDF,4)
@@ -150,7 +150,7 @@ ITNproperties<-function(gs,weighted){
       "In.Degree.Centralisation",
       "All.Degree.Centralisation",
       "Clustering.coefficient.transitivity",
-      "Region.Homophily",
+      #"Region.Homophily",
       "Degree.Assortativity")
     colnames(myDF)<-"Network.Properties"
 

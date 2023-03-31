@@ -4,10 +4,12 @@
 \alias{ITNproperties}
 \title{ITN Properties}
 \usage{
-ITNproperties(gs)
+ITNproperties(gs, weighted)
 }
 \arguments{
 \item{gs}{International Trade Network - igraph object}
+
+\item{weighted}{TRUE-weighted, FALSE-binary}
 }
 \value{
 Table of centrality results (dataframe)
@@ -25,6 +27,6 @@ This function calculates network level properties for the ITN. These include:
 data(ELEnet16)
 
 ##Calculate the network properties
-ITNPROP<-ITNproperties(ELEnet16)
+ITNPROP<-ITNproperties(ELEnet16,TRUE)
 
 }

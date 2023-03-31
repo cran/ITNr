@@ -7,35 +7,15 @@
 #' yet you cannot put “all” for both – only for either reporters or partners.
 #' Then for the other you are limited to a character vector of country names,
 #' length five or fewer. Therefore, this will not give you a full network.
-#' However, this function can be applied to trade data downloaded from UN Comtrade (download csv and read into R as a dataframe), or any other trade data which is in the same format as the comtradr dataframe.
+#' However, this function can be applied to trade data downloaded from UN Comtrade (download csv and read into R as a dataframe), or any other trade data. You just make sure it has the following column names:
+#' reporter_iso, partner_iso, trade_value_usd and year. Some dataformats may have different names. Also - it is important to note that this function is for import data.
 #' @param DF Dataframe of trade data downloaded (potentially using the comtradr package)
 #' @param YEAR Year
 #' @param threshold Apply a threshold - TRUE, Extract the backbone - FALSE
 #' @param cutoff Threshold - cutoff level, Backbone - significance level
 #' @export
 #' @return International Trade Network - igraph object
-#' @examples \donttest{
-#'##download data using comtradr
-#'#require(comtradr)
-#'
-#'##Download the trade data for tomatoes - code 0702
-#'##All countries, Year - 2016
-#'#ex_2 <- ct_search(reporters = "All",
-#'#               partners = c("USA","China",
-#'#               "Germany","Canada","Mexico"),
-#'#               trade_direction = "imports",
-#'#               start_date = "2016-01-01",
-#'#               end_date = "2016-12-31",
-#'#               commod_codes = "0702")
-#'
-#'##this then gives a data frame which
-#'##we can clean using the following function:
-#'tomatoesITN<-Comtradrclean(ex_2,2016,TRUE,0.01)
-#'
-#'##We apply a threshold - only retaining ties that are at least 0.01%
-#'##of total tomatoes trade (amngst these countries)
-#'
-#' }
+
 Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   DATA<-subset(DF,DF$year==YEAR)
 
@@ -70,7 +50,7 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   INCOMElist<-WDICountryInfo[,"income"]
   CountryRegion<-cbind(COUNTRYlist,REGIONlist)
   CountryIncome<-cbind(COUNTRYlist,INCOMElist)
-  AggReg<-c("All","EUN","UNS","OAS","FRE",
+  AggReg<-c("All","EUN","UNS","OAS","FRE","BAT",
             "SPE","VAT","UMI","ATA","PCN","AIA","COK",
             "SHN","MSR","NIU",
             "BES","BLM","BUN","BVT","CCK","CXR","FLK",#Small regions
@@ -122,7 +102,7 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
     Share[[i]]<-(VAL[i]/GrandTotal)*100
   }
   Share <-plyr::ldply(Share, data.frame)
-  Share<-dplyr::as_data_frame(Share)
+  Share<-dplyr::as_tibble(Share)
   colnames(Share)<-"Share"
   FULLel<-cbind(FULLel,Share)
 
@@ -171,26 +151,27 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
     FDIListAttr[[i]]<-subset(WDIFDI3,WDIFDI3$iso3 %in% CountryNames[i])
   }
   dfREG<-plyr::ldply(RegionListAttr, data.frame)
-  dfREG<-dplyr::as_data_frame(dfREG)
+  dfREG<-dplyr::as_tibble(dfREG)
   dfINC<-plyr::ldply(IncomeListAttr,data.frame)
-  dfINC<-dplyr::as_data_frame(dfINC)
+  dfINC<-dplyr::as_tibble(dfINC)
   dfGDP<-plyr::ldply(GDPListattr,data.frame)
-  dfGDP<-dplyr::as_data_frame(dfGDP)
+  dfGDP<-dplyr::as_tibble(dfGDP)
   dfGDPPC<-plyr::ldply(GDPPCListattr, data.frame)
-  dfGDPPC<-dplyr::as_data_frame(dfGDPPC)
+  dfGDPPC<-dplyr::as_tibble(dfGDPPC)
   dfGDPgrowth<-plyr::ldply(GDPgrowthListAttr, data.frame)
-  dfGDPgrowth<-dplyr::as_data_frame(dfGDPgrowth)
+  dfGDPgrowth<-dplyr::as_tibble(dfGDPgrowth)
   dfFDI<-plyr::ldply(FDIListAttr, data.frame)
-  dfFDI<-dplyr::as_data_frame(dfFDI)
+  dfFDI<-dplyr::as_tibble(dfFDI)
 
   target<-CountryNames
   dfREG<-dfREG[match(target,dfREG$COUNTRYlist),]
-  RR<-as.vector(dfREG[,2])
-  RR2<-as.factor(RR)
+  #
+  RR<-unlist(dfREG[,2])
+  RR2 <- as.factor(RR)
   H<-as.character(dfREG$REGIONlist)
 
   dfINC<-dfINC[match(target,dfINC$COUNTRYlist),]
-  KK<-as.vector(dfINC[,2])
+  KK<-unlist(dfINC[,2])
   KK2<-as.factor(KK)
   U<-as.character(dfINC$INCOMElist)
 
@@ -205,12 +186,16 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   dfGDPgrowth<-dfGDPgrowth[match(target,dfGDPgrowth$iso3),]
   dfFDI<-dfFDI[match(target,dfFDI$iso3),]
 
-  GGDP<-as.vector(dfGDP[,2])
+  GGDP<-unlist(dfGDP[,2])
   GGDP<-suppressWarnings(as.numeric(GGDP))
-  GGDPPC<-as.vector(dfGDPPC[,2])
+  GGDPPC<-unlist(dfGDPPC[,2])
   GGDPPC<-suppressWarnings(as.numeric(GGDPPC))
   GGDPgrowth<-as.vector(dfGDPgrowth[,2])
+  GGDPgrowth<-GGDPgrowth$GDPgrowth
+  GGDPgrowth<-suppressWarnings(as.numeric(GGDPgrowth))
   GFDI<-as.vector(dfFDI[,2])
+  GFDI<-GFDI$FDI
+  GFDI<-suppressWarnings(as.numeric(GFDI))
 
   IH<-fastmatch::fmatch(KK,Ainc)
   CH<-fastmatch::fmatch(RR, A)
@@ -246,3 +231,4 @@ Comtradrclean<-function(DF,YEAR,threshold,cutoff){
   G5<-igraph::delete.vertices(G4, which(igraph::degree(G4)==0))
   return(G5)
 }
+
